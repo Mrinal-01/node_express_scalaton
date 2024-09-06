@@ -7,12 +7,27 @@ const users = require("./users")
 const login = require("./auth")
 const signup = require("./auth/signup")
 const forgotpassword = require("./auth/password")
+const shoppingCart=require('./stripeRoutes')
 
 router.post("/login", login.post) // UNAUTHENTICATED
 router.post("/signup", signup.post) // UNAUTHENTICATED
 router.post("/forgotpassword", forgotpassword.startWorkflow) // UNAUTHENTICATED; AJAX
 router.post("/resetpassword", forgotpassword.resetPassword) // UNAUTHENTICATED; AJAX
 
+// This routes are all related to Shopping cart
+router.post("/add-customer",shoppingCart.addCustomerToStripe)
+
+router.post("/add-vendor",shoppingCart.addVendors)
+router.get('/return',shoppingCart.activateAccount)
+router.get("/reauth", shoppingCart.reauth);
+
+router.post('/add-products',shoppingCart.addProducts)
+// router.post('/buy/products',shoppingCart.buyProduct)
+router.post('/purchase/products',shoppingCart.productPurchase)
+router.get('/chek-balance', shoppingCart.checkAccBalance)
+
+router.post('/create-charge', shoppingCart.createCharge)
+router.post('/create-transfer', shoppingCart.createTransfer)
 router.all("*", checkJwt) // use this auth middleware for ALL subsequent routes
 
 router.get("/user/:id", users.get)
