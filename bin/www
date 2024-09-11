@@ -7,6 +7,8 @@
 var app = require('../app');
 var debug = require('debug')('express-skeleton-3:server');
 var http = require('http');
+//I have added below line
+const {Server} = require("socket.io")
 
 /**
  * Get port from environment and store in Express.
@@ -20,7 +22,29 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+//I have added below code for connection
+const io = new Server(server)
+io.on("connection",(socket)=>{
+  // console.log("A new user connected:",socket.id);
+  // socket.on("user-message", (message)=>{
+  //   // console.log("A user message: ", message);
+  //   io.emit("message",message)
+  // })
 
+  socket.on("user-message", (message) => {
+    // Emit the message to all clients except the sender
+    socket.broadcast.emit("message", message);
+  });
+
+
+  // socket.broadcast.emit("message", `User ${socket.id} has joined the chat`);
+
+  //   // Notify all clients when a user disconnects
+  //   socket.on("disconnect", () => {
+  //       io.emit("message", `User ${socket.id} has left the chat`);
+  //   });
+
+})
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -88,3 +112,4 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+

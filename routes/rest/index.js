@@ -4,6 +4,7 @@ const expressJwt = require("express-jwt")
 const checkJwt = expressJwt({ secret: process.env.SECRET, algorithms: ['RS256'] }) // the JWT auth check middleware
 const multer = require("multer");
 
+
 const users = require("./users")
 const login = require("./auth")
 const signup = require("./auth/signup")
@@ -11,6 +12,7 @@ const forgotpassword = require("./auth/password")
 const shoppingCart=require('./stripeRoutes')
 const awsRoutes=require('./awsRoutes')
 const aws = require('../../lib/aws')
+const chat=require('./chat')
 
 router.post("/login", login.post) // UNAUTHENTICATED
 router.post("/signup", signup.post) // UNAUTHENTICATED
@@ -42,6 +44,8 @@ const upload = multer({
 router.post('/upload-image',upload.single('file'),awsRoutes.uploadImage)
 router.get('/view-image/:filename',awsRoutes.viewImage)
 
+//Route to implement socket.io
+router.get("/chat-app",chat.chatApp)
 
 
 router.all("*", checkJwt) // use this auth middleware for ALL subsequent routes
