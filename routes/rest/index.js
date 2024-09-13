@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
-const expressJwt = require("express-jwt")
-const checkJwt = expressJwt({ secret: process.env.SECRET, algorithms: ['RS256'] }) // the JWT auth check middleware
+const expressJwt = require("express-jwt");
+const checkJwt = expressJwt({ secret: process.env.SECRET }); // the JWT auth check middleware
 const multer = require("multer");
 
 
@@ -13,6 +13,7 @@ const shoppingCart=require('./stripeRoutes')
 const awsRoutes=require('./awsRoutes')
 const aws = require('../../lib/aws')
 const chat=require('./chat')
+const smsRoutes=require('./sendSms')
 
 router.post("/login", login.post) // UNAUTHENTICATED
 router.post("/signup", signup.post) // UNAUTHENTICATED
@@ -46,6 +47,11 @@ router.get('/view-image/:filename',awsRoutes.viewImage)
 
 //Route to implement socket.io
 router.get("/chat-app",chat.chatApp)
+
+//Router to Implement Twilio for send Messages
+
+router.post("/send-sms",smsRoutes.sendSms)
+router.post('/receive-message',smsRoutes.receiveSms)
 
 
 router.all("*", checkJwt) // use this auth middleware for ALL subsequent routes
